@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd">
+	<changeSet id="202101302147" author="Kristofer Pearson">
+		<createTable tableName="task">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="task_id_pk" />
+            </column>
+            <column name="name" type="varchar(250)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="task_name_unq" />
+            </column>
+        </createTable>
+        <createTable tableName="execution_log">
+			<column name="id" type="bigint" autoIncrement="true" >
+				<constraints primaryKey="true" primaryKeyName="execution_log_id_pk" />
+			</column>
+			<column name="task_id" type="int">
+				<constraints nullable="false" foreignKeyName="fk_execution_log_task" references="task(id)"/>
+			</column>
+			<column name="start_date_time" type="timestamp" />
+			<column name="end_date_time" type="timestamp" />
+		</createTable>
+        <insert tableName="task">
+            <column name="name" value="waterBill" />
+        </insert>
+        <insert tableName="task">
+            <column name="name" value="gasBill" />
+        </insert>
+        <insert tableName="task">
+            <column name="name" value="electricBill" />
+        </insert>
+        <insert tableName="task">
+            <column name="name" value="cableBill" />
+        </insert>
+	</changeSet>
+</databaseChangeLog>
