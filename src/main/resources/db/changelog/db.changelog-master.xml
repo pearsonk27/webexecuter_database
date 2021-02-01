@@ -37,4 +37,10 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             <column name="name" value="cableBill" />
         </insert>
 	</changeSet>
+    <changeSet id="202101312236" author="Kristofer Pearson">
+        <insert tableName="task">
+            <column name="name" value="test" />
+        </insert>
+        <sqlFile path="sql/create_task_metrics_view.pgsql" />
+    </changeSet>
 </databaseChangeLog>
