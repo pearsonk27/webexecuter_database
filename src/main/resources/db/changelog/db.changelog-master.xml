@@ -43,4 +43,58 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
         </insert>
         <sqlFile path="sql/create_task_metrics_view.pgsql" />
     </changeSet>
+    <changeSet id="202102021839" author="Kristofer Pearson">
+        <createTable tableName="execution_step">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="execution_step_id_pk" />
+            </column>
+            <column name="task_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_execution_step_task_id" references="task(id)" />
+            </column>
+            <column name="name" type="varchar(250)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="execution_step_name_unq" />
+            </column>
+        </createTable>
+        <createTable tableName="execution_step_log">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="execution_step_log_id_pk" />
+            </column>
+            <column name="execution_log_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_execution_step_log_execution_log_id" references="execution_log(id)"/>
+            </column>
+            <column name="execution_step_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_execution_log_step_id" references="execution_step(id)" />
+            </column>
+			<column name="start_date_time" type="timestamp" />
+			<column name="end_date_time" type="timestamp" />
+        </createTable>
+        <addColumn tableName="task">
+            <column name="display_name" type="varchar(250)"/>
+        </addColumn>
+        <update tableName="task">
+            <column name="display_name" value="Cable Bill" />
+            <where>name = 'cableBill'</where>
+        </update>
+        <update tableName="task">
+            <column name="display_name" value="Water Bill" />
+            <where>name = 'waterBill'</where>
+        </update>
+        <update tableName="task">
+            <column name="display_name" value="Electric Bill" />
+            <where>name = 'electricBill'</where>
+        </update>
+        <update tableName="task">
+            <column name="display_name" value="Gas Bill" />
+            <where>name = 'gasBill'</where>
+        </update>
+        <update tableName="task">
+            <column name="display_name" value="Test" />
+            <where>name = 'test'</where>
+        </update>
+        <addNotNullConstraint tableName="task" columnName="display_name" />
+        <addUniqueConstraint tableName="task" columnNames="display_name" />
+    </changeSet>
+    <changeSet id="202102042223" author="Kristofer Pearson">
+        <sqlFile path="sql/create_task_metrics_view_v2.pgsql" />
+    </changeSet>
 </databaseChangeLog>
