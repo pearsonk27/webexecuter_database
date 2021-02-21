@@ -97,4 +97,24 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
     <changeSet id="202102042223" author="Kristofer Pearson">
         <sqlFile path="sql/create_task_metrics_view_v2.pgsql" />
     </changeSet>
+    <changeSet id="202102172105" author="Kristofer Pearson">
+        <createTable tableName="execution_error">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="execution_error_id_pk" />
+            </column>
+            <column name="execution_step_log_id" type="bigint">
+                <constraints nullable="false" 
+                    foreignKeyName="fk_execution_error_execution_step_log_id"
+                    references="execution_step_log(id)" 
+                    unique="true" 
+                    uniqueConstraintName="execution_step_log_id_unq" />
+            </column>
+            <column name="message" type="varchar(4000)">
+                <constraints nullable="false" />
+            </column>
+            <column name="stack_trace" type="varchar(4000)" />
+            <column name="create_date_time" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP" />
+        </createTable>
+        <sqlFile path="sql/create_task_metrics_view_v3.pgsql" />
+    </changeSet>
 </databaseChangeLog>
