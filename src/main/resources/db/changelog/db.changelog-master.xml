@@ -5,7 +5,7 @@ xmlns:pro="http://www.liquibase.org/xml/ns/pro"
 xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
 http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd">
-	<changeSet id="202101302147" author="Kristofer Pearson">
+    <changeSet id="202101302147" author="Kristofer Pearson">
 		<createTable tableName="task">
             <column name="id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="task_id_pk" />
@@ -52,9 +52,13 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
                 <constraints nullable="false" foreignKeyName="fk_execution_step_task_id" references="task(id)" />
             </column>
             <column name="name" type="varchar(250)">
-                <constraints nullable="false" unique="true" uniqueConstraintName="execution_step_name_unq" />
+                <constraints nullable="false" />
             </column>
         </createTable>
+        <addUniqueConstraint
+                tableName="execution_step"
+                columnNames="task_id, name"
+                constraintName="execution_step_task_id_name_unq" />
         <createTable tableName="execution_step_log">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" primaryKeyName="execution_step_log_id_pk" />
@@ -116,5 +120,36 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
             <column name="create_date_time" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP" />
         </createTable>
         <sqlFile path="sql/create_task_metrics_view_v3.pgsql" />
+    </changeSet>
+    <changeSet id="202102211818" author="Kristofer Pearson">
+        <createTable tableName="schedule_type">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="schedule_type_id_pk" />
+            </column>
+            <column name="name" type="varchar(250)">
+                <constraints nullable="false" unique="true" uniqueConstraintName="schedule_type_name_unq" />
+            </column>
+        </createTable>
+        <insert tableName="schedule_type">
+            <column name="name" value="Monthly" />
+        </insert>
+        <createTable tableName="execution_schedule">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="execution_schedule_id_pk" />
+            </column>
+            <column name="task_id" type="int">
+				<constraints nullable="false" foreignKeyName="fk_execution_schedule_task" references="task(id)"/>
+			</column>
+            <column name="schedule_type_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_execution_schedule_type" references="schedule_type(id)" />
+            </column>
+            <column name="day_number" type="int" />
+            <column name="time_of_day" type="time" />
+        </createTable>
+        <addColumn tableName="execution_log">
+            <column name="execution_schedule_id" type="int">
+                <constraints foreignKeyName="fk_execution_schedule_id" references="execution_schedule(id)"/>
+            </column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>
